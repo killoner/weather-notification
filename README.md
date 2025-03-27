@@ -35,14 +35,7 @@
 
 可以选择以下任一通知方式：
 
-#### 2.1 邮件通知
 
-1. 在GitHub仓库设置中添加以下Secrets：
-   - `EMAIL_HOST`：SMTP服务器地址
-   - `EMAIL_PORT`：SMTP服务器端口
-   - `EMAIL_USER`：发件人邮箱地址
-   - `EMAIL_PASSWORD`：发件人邮箱密码或授权码
-   - `EMAIL_RECEIVER`：收件人邮箱地址
 
 #### 2.2 Server酱通知
 
@@ -102,6 +95,17 @@ COUNTRY_CODE = "CN"  # 中国的国家代码
 - 修改通知时间：编辑`.github/workflows/weather_notification.yml`文件中的cron表达式
 - 修改通知内容格式：编辑`generate_weather_message`函数
 - 修改通知接收人：根据选择的通知方式，编辑相应的接收人配置
+
+## 常见问题
+
+**Q：收不到通知怎么办？**
+- 检查GitHub Secrets配置是否正确
+- 确认网络代理设置（国内服务器可能需要配置代理）
+- 查看weather_log.txt中的错误日志
+
+**Q：如何获取Telegram Chat ID？**
+1. 给@userinfobot发送任意消息
+2. 机器人会回复你的Chat ID
 
 ## 许可证
 
