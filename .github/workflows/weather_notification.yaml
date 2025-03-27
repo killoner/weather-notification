@@ -26,8 +26,8 @@ jobs:
       - name: Run weather notification script
         env:
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
-          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          #EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          #EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+          #EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          #EMAIL_TO: ${{ secrets.EMAIL_TO }}
