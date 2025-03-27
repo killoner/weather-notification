@@ -3,9 +3,6 @@ import json
 import datetime
 import logging
 import os
-import smtplib
-from email.mime.text import MIMEText
-from email.header import Header
 
 # 配置日志
 logging.basicConfig(
@@ -220,34 +217,24 @@ def main():
         message = generate_weather_message(weather_data)
         logger.info("生成天气消息成功")
         
-        logger.info("开始发送邮件通知")
-        # 由于send_email_notification未定义，先定义一个基础的邮件发送函数
-        def send_email_notification(message):
+        logger.info("开始发送Server酱通知")
+        def send_serverchan_notification(message):
             try:
-                # 邮件服务器配置
-                smtp_server = "smtp.example.com"  # 替换为实际的SMTP服务器
-                smtp_port = 587
-                sender = "your_email@example.com"  # 替换为发件人邮箱
-                password = "your_password"  # 替换为邮箱密码
-                recipient = "recipient@example.com"  # 替换为收件人邮箱
-
-                # 创建邮件内容
-                msg = MIMEText(message, 'plain', 'utf-8')
-                msg['Subject'] = '天气预报通知'
-                msg['From'] = sender
-                msg['To'] = recipient
-
-                # 发送邮件
-                with smtplib.SMTP(smtp_server, smtp_port) as server:
-                    server.starttls()
-                    server.login(sender, password)
-                    server.send_message(msg)
-                return True
+                url = f"https://sctapi.ftqq.com/{Config.SERVERCHAN_KEY}.send"
+                data = {
+                    "title": "镇江天气预报",
+                    "desp": message
+                }
+                response = requests.post(url, data=data)
+                if response.status_code == 200:
+                    return True
+                logger.error(f"Server酱通知失败: {response.text}")
+                return False
             except Exception as e:
-                logger.error(f"发送邮件失败: {str(e)}")
+                logger.error(f"发送Server酱通知异常: {str(e)}")
                 return False
 
-        if send_email_notification(message):
+        if send_serverchan_notification(message):
             logger.info("天气通知发送成功")
         else:
             logger.error("天气通知发送失败")
