@@ -22,6 +22,7 @@ class Config:
     CITY_NAME = "Zhenjiang"  # 镇江的城市名称
     COUNTRY_CODE = "CN"  # 中国的国家代码
     LANG = "zh_cn"  # 返回数据的语言，中文
+    SERVERCHAN_KEY = os.environ.get("SERVERCHAN_KEY", "YOUR_SERVERCHAN_KEY")  # Server酱的SendKey
     
     # Server酱配置
 
