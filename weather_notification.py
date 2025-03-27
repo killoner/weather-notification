@@ -26,11 +26,12 @@ class Config:
     COUNTRY_CODE = "CN"  # 中国的国家代码
     LANG = "zh_cn"  # 返回数据的语言，中文
     
-    # 微信企业号配置
-    CORP_ID = os.environ.get("CORP_ID", "YOUR_CORP_ID")  # 替换为你的企业ID
-    CORP_SECRET = os.environ.get("CORP_SECRET", "YOUR_CORP_SECRET")  # 替换为你的应用密钥
-    AGENT_ID = os.environ.get("AGENT_ID", "YOUR_AGENT_ID")  # 替换为你的应用ID
-    TO_USER = "@all"  # 发送给所有人，可以替换为特定用户ID
+    # 邮件配置
+    EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.example.com")  # SMTP服务器
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))  # SMTP端口
+    EMAIL_USER = os.environ.get("EMAIL_USER", "your_email@example.com")  # 发件人邮箱
+    EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "your_password")  # 邮箱密码或授权码
+    EMAIL_TO = os.environ.get("EMAIL_TO", "recipient@example.com")  # 收件人邮箱
 
 # 获取天气数据
 def get_weather():
@@ -173,50 +174,25 @@ def process_forecast_data(forecast_data):
     # 只返回未来3天的数据
     return result[:3]
 
-# 获取微信访问令牌
-def get_wechat_token():
+# 发送邮件通知
+def send_email_notification(message):
     try:
-        url = f"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={Config.CORP_ID}&corpsecret={Config.CORP_SECRET}"
-        response = requests.get(url)
-        data = response.json()
+        # 创建邮件内容
+        msg = MIMEText(message, 'plain', 'utf-8')
+        msg['Subject'] = Header('镇江天气预报', 'utf-8')
+        msg['From'] = Config.EMAIL_USER
+        msg['To'] = Config.EMAIL_TO
         
-        if data.get("errcode") == 0:
-            return data.get("access_token")
-        else:
-            logger.error(f"获取微信令牌失败: {data}")
-            return None
+        # 连接SMTP服务器并发送邮件
+        with smtplib.SMTP(Config.EMAIL_HOST, Config.EMAIL_PORT) as server:
+            server.starttls()  # 启用TLS加密
+            server.login(Config.EMAIL_USER, Config.EMAIL_PASSWORD)
+            server.sendmail(Config.EMAIL_USER, [Config.EMAIL_TO], msg.as_string())
+        
+        logger.info("邮件发送成功")
+        return True
     except Exception as e:
-        logger.error(f"获取微信令牌异常: {str(e)}")
-        return None
-
-# 发送微信消息
-def send_wechat_message(message):
-    token = get_wechat_token()
-    if not token:
-        return False
-    
-    try:
-        url = f"https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={token}"
-        data = {
-            "touser": Config.TO_USER,
-            "msgtype": "text",
-            "agentid": Config.AGENT_ID,
-            "text": {
-                "content": message
-            }
-        }
-        
-        response = requests.post(url, data=json.dumps(data))
-        result = response.json()
-        
-        if result.get("errcode") == 0:
-            logger.info("微信消息发送成功")
-            return True
-        else:
-            logger.error(f"微信消息发送失败: {result}")
-            return False
-    except Exception as e:
-        logger.error(f"微信消息发送异常: {str(e)}")
+        logger.error(f"邮件发送异常: {str(e)}")
         return False
 
 # 生成天气消息
@@ -267,8 +243,8 @@ def main():
         message = generate_weather_message(weather_data)
         logger.info("生成天气消息成功")
         
-        logger.info("开始发送微信消息")
-        if send_wechat_message(message):
+        logger.info("开始发送邮件通知")
+        if send_email_notification(message):
             logger.info("天气通知发送成功")
         else:
             logger.error("天气通知发送失败")
