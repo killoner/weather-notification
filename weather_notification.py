@@ -26,12 +26,7 @@ class Config:
     COUNTRY_CODE = "CN"  # 中国的国家代码
     LANG = "zh_cn"  # 返回数据的语言，中文
     
-    # 邮件配置
-    EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.example.com")  # SMTP服务器
-    EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))  # SMTP端口
-    EMAIL_USER = os.environ.get("EMAIL_USER", "your_email@example.com")  # 发件人邮箱
-    EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD", "your_password")  # 邮箱密码或授权码
-    EMAIL_TO = os.environ.get("EMAIL_TO", "recipient@example.com")  # 收件人邮箱
+    # Server酱配置
 
 # 获取天气数据
 def get_weather():
@@ -175,25 +170,7 @@ def process_forecast_data(forecast_data):
     return result[:3]
 
 # 发送邮件通知
-def send_email_notification(message):
-    try:
-        # 创建邮件内容
-        msg = MIMEText(message, 'plain', 'utf-8')
-        msg['Subject'] = Header('镇江天气预报', 'utf-8')
-        msg['From'] = Config.EMAIL_USER
-        msg['To'] = Config.EMAIL_TO
-        
-        # 连接SMTP服务器并发送邮件
-        with smtplib.SMTP(Config.EMAIL_HOST, Config.EMAIL_PORT) as server:
-            server.starttls()  # 启用TLS加密
-            server.login(Config.EMAIL_USER, Config.EMAIL_PASSWORD)
-            server.sendmail(Config.EMAIL_USER, [Config.EMAIL_TO], msg.as_string())
-        
-        logger.info("邮件发送成功")
-        return True
-    except Exception as e:
-        logger.error(f"邮件发送异常: {str(e)}")
-        return False
+    # 发送Server酱通知
 
 # 生成天气消息
 def generate_weather_message(weather_data):
@@ -244,6 +221,32 @@ def main():
         logger.info("生成天气消息成功")
         
         logger.info("开始发送邮件通知")
+        # 由于send_email_notification未定义，先定义一个基础的邮件发送函数
+        def send_email_notification(message):
+            try:
+                # 邮件服务器配置
+                smtp_server = "smtp.example.com"  # 替换为实际的SMTP服务器
+                smtp_port = 587
+                sender = "your_email@example.com"  # 替换为发件人邮箱
+                password = "your_password"  # 替换为邮箱密码
+                recipient = "recipient@example.com"  # 替换为收件人邮箱
+
+                # 创建邮件内容
+                msg = MIMEText(message, 'plain', 'utf-8')
+                msg['Subject'] = '天气预报通知'
+                msg['From'] = sender
+                msg['To'] = recipient
+
+                # 发送邮件
+                with smtplib.SMTP(smtp_server, smtp_port) as server:
+                    server.starttls()
+                    server.login(sender, password)
+                    server.send_message(msg)
+                return True
+            except Exception as e:
+                logger.error(f"发送邮件失败: {str(e)}")
+                return False
+
         if send_email_notification(message):
             logger.info("天气通知发送成功")
         else:
