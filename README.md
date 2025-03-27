@@ -56,7 +56,7 @@
 在`weather_notification.py`文件中修改`CITY_NAME`和`COUNTRY_CODE`为你所在城市的名称和国家代码：
 
 ```python
-CITY_NAME = "Zhenjiang"  # 默认为镇江，修改为你所在城市的名称（英文）
+CITY_NAME = "xx"  # 默认为xx，修改为你所在城市的名称（英文）
 COUNTRY_CODE = "CN"  # 中国的国家代码
 ```
 
