@@ -24,6 +24,7 @@ jobs:
           pip install requests
       
       - name: Run weather notification script
+        run: python weather_notification.py
         env:
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
           SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
