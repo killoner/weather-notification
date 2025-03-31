@@ -113,7 +113,10 @@ def process_forecast_data(forecast_data):
     daily_data = {}
     for item in forecast_list:
         # 获取日期（不含时间）
-        date = item.get("dt_txt", "").split(" ")[0]
+        # 转换UTC时间为北京时间（UTC+8）
+        utc_time = datetime.datetime.strptime(item.get("dt_txt"), "%Y-%m-%d %H:%M:%S")
+        beijing_time = utc_time + datetime.timedelta(hours=8)
+        date = beijing_time.strftime("%Y-%m-%d")
         if not date:
             continue
             
@@ -178,7 +181,8 @@ def generate_weather_message(weather_data):
     now = weather_data.get("now", {})
     daily = weather_data.get("daily", [])
     
-    today = datetime.datetime.now().strftime("%Y年%m月%d日")
+    # 获取北京时间（UTC+8）
+    today = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime("%Y年%m月%d日")
     
     message = f"【镇江天气预报】{today}\n\n"
     
