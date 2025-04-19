@@ -1,12 +1,12 @@
 # 每日天气通知系统
 
-这是一个基于GitHub Actions的自动化天气通知系统，可以定时获取指定城市的天气信息，并通过多种方式（如邮件、Server酱、Telegram机器人等）发送通知。
+这是一个基于GitHub的自动化天气通知系统，可以定时获取指定城市的天气信息，并通过多种方式（如邮件、服务器酱、电报）机器人等）发送通知。
 
 ## 功能特点
 
 - 自动获取当前天气和未来3天的天气预报
-- 支持多种通知方式（邮件、Server酱、Telegram机器人等）
-- 使用GitHub Actions实现定时自动运行
+- 支持多种通知方式（邮件、服务器酱、电报（Telegram）机器人等）
+- 使用Github操作实现定时自动运行
 - 支持手动触发运行
 - 详细的日志记录
 
@@ -14,22 +14,22 @@
 
 1. 克隆或下载本仓库到本地
    ```
-   git clone https://github.com/yourusername/weather-notification.git
-   cd weather-notification
+   git 克隆 https://github.com/yourusername/weather-notification.git
+   CD 天气通知
    ```
 
 2. 安装依赖
    ```
-   pip install requests
+   pip安装请求
    ```
 
 ## 配置说明
 
-### 1. OpenWeatherMap API配置
+### 1. 开放式天气图应用程序界面配置
 
-1. 注册[OpenWeatherMap开发者账号](https://openweathermap.org/)
-2. 创建应用并获取API Key
-3. 在GitHub仓库设置中添加Secret：`WEATHER_API_KEY`
+1. 注册[开放天气图开发者账号](https://openweathermap.org/)
+2. 创建应用并获取应用程序密钥
+3. 在Github仓库设置中添加秘密：`天气API密钥`
 
 ### 2. 通知方式配置
 
